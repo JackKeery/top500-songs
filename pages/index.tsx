@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import {useEffect, useState} from "react";
 
 type Song = {
   Rank: string;
-  Song: string;
+  Title: string;
   Artist: string;
-  Year: string;
-  Genre: string;
+  Released: string;
+  Rating: string;
 };
 
 export default function Home() {
@@ -25,20 +25,20 @@ export default function Home() {
         <thead>
           <tr>
             <th>Rank</th>
-            <th>Song</th>
+            <th>Title</th>
             <th>Artist</th>
-            <th>Year</th>
-            <th>Genre</th>
+            <th>Released</th>
+            <th>Rating</th>
           </tr>
         </thead>
         <tbody>
           {songs.map((song, index) => (
             <tr key={index}>
               <td>{song.Rank}</td>
-              <td>{song.Song}</td>
+              <td>{song.Title}</td>
               <td>{song.Artist}</td>
-              <td>{song.Year}</td>
-              <td>{song.Genre}</td>
+              <td>{song.Released}</td>
+              <td>{song.Rating}</td>
             </tr>
           ))}
         </tbody>

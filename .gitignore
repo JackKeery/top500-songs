@@ -30,3 +30,7 @@ logs/
 
 # Vercel deployment files
 .vercel/
+
+# Sensitive
+config/
+

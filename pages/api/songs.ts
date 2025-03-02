@@ -1,32 +1,43 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import {google} from "googleapis";
+import type {NextApiRequest, NextApiResponse} from "next";
+import path from "path";
 
 type Song = {
   Rank: string;
-  Song: string;
+  Title: string;
   Artist: string;
-  Year: string;
-  Genre: string;
+  Released: string;
+  Rating: string;
 };
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Song[] | { error: string }>
+    req: NextApiRequest,
+    res: NextApiResponse<Song[] | { error: string }>
 ) {
-  const { GOOGLE_SHEETS_API_KEY, GOOGLE_SHEET_ID } = process.env;
-
-  const sheetName = "Sheet1"; // Change if needed
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${sheetName}?key=${GOOGLE_SHEETS_API_KEY}`;
-
   try {
-    const response = await fetch(url);
-    const data = await response.json();
+    const auth = new google.auth.GoogleAuth({
+      keyFile: path.join(process.cwd(), process.env.GOOGLE_APPLICATION_CREDENTIALS || ""),
+      scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
+    });
 
-    if (!data.values) throw new Error("No data found");
+    const sheets = google
+        .sheets({ version: "v4", auth });
 
-    const headers = data.values[0];
-    const rows = data.values.slice(1);
+    const sheetId = process.env.GOOGLE_SHEET_ID;
+    const range = "Top500!A1:E501";
 
-    const songs: Song[] = rows.map((row) => {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: sheetId,
+      range: range,
+    });
+
+    const rows = response.data.values;
+    if (!rows) throw new Error("No data found in sheet");
+
+    const headers = rows[0];
+    const data = rows.slice(1);
+
+    const songs: Song[] = data.map((row) => {
       let songObj: any = {};
       headers.forEach((header, index) => {
         songObj[header] = row[index] || "";
