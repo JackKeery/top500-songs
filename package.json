@@ -8,8 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "googleapis": "^146.0.0",
-    "next": "latest",
+"next": "latest",
     "react": "latest",
     "react-dom": "latest"
   },

@@ -1,109 +1,90 @@
 # 🎵 Top 500 Songs Website 🎵
 
-This project is a **Next.js** website that displays a ranked list of the **Top 500 Songs** based on data stored in *
-*Google Sheets**. The site is built with **React, TypeScript, and Node.js**, and it can be deployed easily using **Vercel**.
+This project displays a ranked list of the **Top 500 Songs** based on data stored in **Google Sheets**. It consists of a **Kotlin/http4k backend** that serves the song data, and a **Next.js/React frontend** that renders it.
 
 ---
 
 ## 🚀 **Technology Stack**
 
-| Technology            | Purpose                       |
-|-----------------------|-------------------------------|
-| **Next.js**           | Core framework to build pages |
-| **React**             | Creates UI components         |
-| **TypeScript**        | Language of choice            |
-| **Google Sheets API** | Access to song data           |
-| **Node.js**           | Runs Next.js and API calls    |
-| **Vercel**            | Hosts the live website        |
+| Technology            | Purpose                              |
+|-----------------------|--------------------------------------|
+| **Kotlin**            | Backend language                     |
+| **http4k**            | HTTP server framework                |
+| **Gradle**            | Backend build tool                   |
+| **Google Sheets API** | Data source for song data            |
+| **Next.js**           | Frontend framework                   |
+| **React**             | UI components                        |
+| **TypeScript**        | Frontend language                    |
+| **Vercel**            | Hosts the frontend                   |
+
+---
+
+## ⚙️ **Environment Variables**
+
+Both the backend and frontend require environment variables.
+
+### Backend (set in your shell or a `.env` file)
+
+| Variable                          | Description                                      |
+|-----------------------------------|--------------------------------------------------|
+| `GOOGLE_APPLICATION_CREDENTIALS`  | Path to your Google service account JSON key file |
+| `GOOGLE_SHEET_ID`                 | The ID of the Google Sheet containing song data  |
+
+### Frontend
+
+| Variable               | Description                                              |
+|------------------------|----------------------------------------------------------|
+| `NEXT_PUBLIC_API_URL`  | Base URL of the Kotlin backend (default: `http://localhost:8080`) |
 
 ---
 
 ## 🛠 **Useful Commands**
 
-### **Run the Development Server**
+### **Run the Kotlin Backend**
+
+```sh
+cd backend
+./gradlew run
+```
+
+📌 The API will be available at **http://localhost:8080/api/songs**.
+
+### **Run the Frontend Development Server**
 
 ```sh
 npm run dev
 ```
 
-📌 The site should now be available at **http://localhost:3000**.
+📌 The site will be available at **http://localhost:3000**.
 
-### **Build for Production**
+### **Build the Backend (fat jar)**
+
+```sh
+cd backend
+./gradlew build
+```
+
+### **Build the Frontend for Production**
 
 ```sh
 npm run build
-```
-
-📌 Compiles the project for production.
-
-### **Start the Production Server**
-
-```sh
 npm run start
 ```
 
-📌 Runs the compiled project (`npm run build` required first).
-
-### **Check Code Quality**
-
-```sh
-npm run lint
-```
-
-📌 Runs ESLint to check for coding errors.
-
-### **Install Dependencies**
-
-```sh
-npm install
-```
-
-### **Deploy to Vercel**
-
-```sh
-vercel
-```
-
-📌 Deploys the site (interactive mode).
-
-### **Deploy Directly to Production**
+### **Deploy Frontend to Vercel**
 
 ```sh
 vercel --prod
 ```
 
-📌 Skips preview and deploys straight to production.
-
-### **View Logs on Vercel**
-
-```sh
-vercel logs
-```
-
-📌 Shows logs for debugging.
-
-### **Sync Environment Variables from Vercel**
-
-```sh
-vercel env pull
-```
-
-📌 Downloads environment variables from Vercel.
-
-### **List All Domains for the Project**
-
-```sh
-vercel domains
-```
-
-📌 Lists all domains associated with the project.
+📌 Set `NEXT_PUBLIC_API_URL` in your Vercel project environment variables to point at your deployed backend.
 
 ---
 
 ## 👨‍💻 **Author & Contributions**
 
 - Built by **Jack Keery**
-- Ratings By:
+- Ratings by:
     - Jack Keery
     - George Burke
     - Morgan Tupper
