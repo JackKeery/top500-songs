@@ -47,6 +47,6 @@ export default async function handler(
 
     res.status(200).json(songs);
   } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
+    res.status(500).json({ error: "Failed to fetch songs" });
   }
 }
