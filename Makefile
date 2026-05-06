@@ -30,7 +30,7 @@ build:
 
 # Build Docker image and deploy to Google Cloud Run
 deploy:
-	gcloud builds submit --tag $(GCR_IMAGE)
+	gcloud builds submit --tag $(GCR_IMAGE) --suppress-logs
 	gcloud run deploy top500-songs \
 		--image $(GCR_IMAGE) \
 		--platform managed \
