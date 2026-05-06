@@ -40,4 +40,5 @@ jobs:
         env:
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
           GCR_PROJECT: ${{ secrets.GCP_PROJECT }}
+          GCR_REGION: europe-west2
         run: make deploy
