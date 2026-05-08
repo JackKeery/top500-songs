@@ -5,11 +5,24 @@ import com.google.api.services.sheets.v4.SheetsScopes
 import com.google.auth.http.HttpCredentialsAdapter
 import com.google.auth.oauth2.GoogleCredentials
 
-fun googleSheetsRepository(sheets: Sheets): SongsRepository = SongsRepository {
+private val EXCLUDED_SHEETS = setOf("SongPool")
+
+fun googleSheetsTabsRepository(sheets: Sheets): TabsRepository = TabsRepository {
+    val sheetId = System.getenv("GOOGLE_SHEET_ID")
+        ?: error("GOOGLE_SHEET_ID env var not set")
+    sheets.spreadsheets()
+        .get(sheetId)
+        .execute()
+        .sheets
+        .map { it.properties.title }
+        .filter { it !in EXCLUDED_SHEETS }
+}
+
+fun googleSheetsRepository(sheets: Sheets): SongsRepository = SongsRepository { tab ->
     val sheetId = System.getenv("GOOGLE_SHEET_ID")
         ?: error("GOOGLE_SHEET_ID env var not set")
     sheets.spreadsheets().values()
-        .get(sheetId, "Top500!A1:E501")
+        .get(sheetId, "$tab!A1:E501")
         .execute()
         .getValues() ?: emptyList()
 }

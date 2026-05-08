@@ -65,6 +65,41 @@ class SongsHandlerTest {
         assertEquals(Status.INTERNAL_SERVER_ERROR, response.status)
         assertEquals("""{"error":"Failed to fetch songs"}""", response.bodyString())
     }
+
+    @Test
+    fun `passes tab query parameter to repository`() {
+        var capturedTab: String? = null
+        val repository = SongsRepository { tab ->
+            capturedTab = tab
+            emptyList()
+        }
+
+        songsHandler(repository)(Request(GET, "/api/songs?tab=Jack"))
+
+        assertEquals("Jack", capturedTab)
+    }
+
+    @Test
+    fun `defaults to Top500 tab when no tab param provided`() {
+        var capturedTab: String? = null
+        val repository = SongsRepository { tab ->
+            capturedTab = tab
+            emptyList()
+        }
+
+        songsHandler(repository)(Request(GET, "/api/songs"))
+
+        assertEquals("Top500", capturedTab)
+    }
+
+    @Test
+    fun `returns 400 for tab with invalid characters`() {
+        val repository = SongsRepository { emptyList() }
+
+        val response = songsHandler(repository)(Request(GET, "/api/songs?tab=../../etc/passwd"))
+
+        assertEquals(Status.BAD_REQUEST, response.status)
+    }
 }
 
 class ToSongTest {

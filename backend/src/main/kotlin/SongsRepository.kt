@@ -1,3 +1,3 @@
 fun interface SongsRepository {
-    fun fetchRows(): List<List<Any>>
+    fun fetchRows(tab: String): List<List<Any>>
 }
