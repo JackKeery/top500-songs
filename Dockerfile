@@ -4,7 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY pages/ pages/
-COPY tsconfig.json next.config.js next-env.d.ts ./
+COPY styles/ styles/
+COPY tsconfig.json next.config.js next-env.d.ts tailwind.config.js postcss.config.js ./
 RUN npm run build
 
 # Stage 2: Build the Kotlin fat JAR (with frontend embedded)
