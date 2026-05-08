@@ -7,8 +7,10 @@ import org.http4k.server.Undertow
 import org.http4k.server.asServer
 
 fun main() {
+    val client = sheetsClient()
     val app = routes(
-        "/api/songs" bind GET to songsHandler(googleSheetsRepository(sheetsClient())),
+        "/api/songs" bind GET to songsHandler(googleSheetsRepository(client)),
+        "/api/tabs" bind GET to tabsHandler(googleSheetsTabsRepository(client)),
         static(ResourceLoader.Classpath("public"))
     )
 

@@ -10,7 +10,13 @@ type Song = {
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
+function tabLabel(tab: string): string {
+  return tab === "Top500" ? "Overall" : tab;
+}
+
 export default function Home() {
+  const [tabs, setTabs] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState("Top500");
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +24,19 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    fetch("/api/songs")
+    fetch("/api/tabs")
+      .then((res) => res.json())
+      .then((data: string[]) => setTabs(data))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    setSongs([]);
+    setCurrentPage(1);
+
+    fetch(`/api/songs?tab=${activeTab}`)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -31,7 +49,7 @@ export default function Home() {
         setError("Failed to load songs");
         setLoading(false);
       });
-  }, []);
+  }, [activeTab]);
 
   const totalPages = Math.ceil(songs.length / pageSize);
   const start = (currentPage - 1) * pageSize;
@@ -45,6 +63,20 @@ export default function Home() {
   return (
     <div className="container">
       <h1>🎵 Top 500 Songs 🎵</h1>
+
+      {tabs.length > 0 && (
+        <nav className="tab-nav">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              className={`tab-btn${activeTab === tab ? " active" : ""}`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tabLabel(tab)}
+            </button>
+          ))}
+        </nav>
+      )}
 
       {loading && <p className="status">Loading…</p>}
       {error && <p className="status error">{error}</p>}
@@ -126,6 +158,38 @@ export default function Home() {
           letter-spacing: 0.02em;
         }
 
+        /* Tab nav */
+        .tab-nav {
+          display: flex;
+          gap: 2px;
+          border-bottom: 2px solid rgba(128, 128, 128, 0.2);
+          margin-bottom: 24px;
+        }
+
+        .tab-btn {
+          padding: 10px 20px;
+          border: none;
+          border-bottom: 2px solid transparent;
+          margin-bottom: -2px;
+          background: transparent;
+          cursor: pointer;
+          font-size: 0.95rem;
+          font-weight: 500;
+          opacity: 0.5;
+          transition: opacity 0.15s, border-color 0.15s;
+          white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+          opacity: 0.8;
+        }
+
+        .tab-btn.active {
+          opacity: 1;
+          border-bottom-color: #4a90d9;
+          color: #4a90d9;
+        }
+
         .status {
           text-align: center;
           padding: 40px;
@@ -138,6 +202,7 @@ export default function Home() {
           opacity: 1;
         }
 
+        /* Controls */
         .controls {
           display: flex;
           align-items: center;
@@ -179,6 +244,7 @@ export default function Home() {
           opacity: 1;
         }
 
+        /* Table */
         table {
           width: 100%;
           border-collapse: collapse;
@@ -219,6 +285,7 @@ export default function Home() {
           text-align: center;
         }
 
+        /* Pagination */
         .pagination {
           display: flex;
           align-items: center;
