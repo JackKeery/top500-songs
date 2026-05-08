@@ -61,266 +61,137 @@ export default function Home() {
   }
 
   return (
-    <div className="container">
-      <h1>🎵 Top 500 Songs 🎵</h1>
+    <div className="min-h-screen">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
 
-      {tabs.length > 0 && (
-        <nav className="tab-nav">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              className={`tab-btn${activeTab === tab ? " active" : ""}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tabLabel(tab)}
-            </button>
-          ))}
-        </nav>
-      )}
+        <h1 className="text-3xl sm:text-4xl font-bold text-center tracking-tight mb-8">
+          🎵 Top 500 Songs 🎵
+        </h1>
 
-      {loading && <p className="status">Loading…</p>}
-      {error && <p className="status error">{error}</p>}
-
-      {!loading && !error && (
-        <>
-          <div className="controls">
-            <span className="label">Show</span>
-            {PAGE_SIZE_OPTIONS.map((size) => (
-              <button
-                key={size}
-                className={`size-btn${pageSize === size ? " active" : ""}`}
-                onClick={() => handlePageSizeChange(size)}
-              >
-                {size}
-              </button>
-            ))}
-            <span className="label">per page</span>
-            <span className="total">{songs.length} songs</span>
-          </div>
-
-          <table>
-            <thead>
-              <tr>
-                <th className="col-rank">Rank</th>
-                <th className="col-title">Title</th>
-                <th className="col-artist">Artist</th>
-                <th className="col-released">Released</th>
-                <th className="col-rating">Rating</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pageSongs.map((song) => (
-                <tr key={song.rank}>
-                  <td className="col-rank">{song.rank}</td>
-                  <td className="col-title">{song.title}</td>
-                  <td className="col-artist">{song.artist}</td>
-                  <td className="col-released">{song.released}</td>
-                  <td className="col-rating">{song.rating}</td>
-                </tr>
+        {/* Tab nav — scrolls horizontally on mobile */}
+        {tabs.length > 0 && (
+          <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 mb-8">
+            <nav className="flex border-b border-zinc-800 min-w-max sm:min-w-0">
+              {tabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 -mb-px transition-colors ${
+                    activeTab === tab
+                      ? "border-blue-500 text-blue-400"
+                      : "border-transparent text-zinc-400 hover:text-zinc-200"
+                  }`}
+                >
+                  {tabLabel(tab)}
+                </button>
               ))}
-            </tbody>
-          </table>
-
-          <div className="pagination">
-            <button
-              className="page-btn"
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-            >
-              ← Prev
-            </button>
-            <span className="page-info">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              className="page-btn"
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-            >
-              Next →
-            </button>
+            </nav>
           </div>
-        </>
-      )}
+        )}
 
-      <style jsx>{`
-        .container {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 32px 24px;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
+        {loading && (
+          <p className="text-center text-zinc-500 py-20 text-lg">Loading…</p>
+        )}
+        {error && (
+          <p className="text-center text-red-400 py-20 text-lg">{error}</p>
+        )}
 
-        h1 {
-          text-align: center;
-          font-size: 2rem;
-          margin-bottom: 24px;
-          letter-spacing: 0.02em;
-        }
+        {!loading && !error && (
+          <>
+            {/* Controls */}
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              <span className="text-sm text-zinc-500">Show</span>
+              {PAGE_SIZE_OPTIONS.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => handlePageSizeChange(size)}
+                  className={`px-3 py-1 rounded text-sm border transition-colors ${
+                    pageSize === size
+                      ? "bg-blue-600 border-blue-600 text-white"
+                      : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+              <span className="text-sm text-zinc-500">per page</span>
+              <span className="ml-auto text-sm text-zinc-600">
+                {songs.length} songs
+              </span>
+            </div>
 
-        /* Tab nav */
-        .tab-nav {
-          display: flex;
-          gap: 2px;
-          border-bottom: 2px solid rgba(128, 128, 128, 0.2);
-          margin-bottom: 24px;
-        }
+            {/* Table — scrolls horizontally if needed, Released hidden on mobile */}
+            <div className="overflow-x-auto rounded-lg border border-zinc-800">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-800">
+                    <th className="px-4 py-3 w-14 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                      #
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                      Title
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                      Artist
+                    </th>
+                    <th className="hidden sm:table-cell px-4 py-3 w-24 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                      Year
+                    </th>
+                    <th className="px-4 py-3 w-20 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                      Rating
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-800">
+                  {pageSongs.map((song) => (
+                    <tr
+                      key={song.rank}
+                      className="hover:bg-zinc-900 transition-colors"
+                    >
+                      <td className="px-4 py-3 text-center text-zinc-600 tabular-nums text-xs">
+                        {song.rank}
+                      </td>
+                      <td className="px-4 py-3 text-zinc-100 font-medium leading-snug">
+                        {song.title}
+                      </td>
+                      <td className="px-4 py-3 text-zinc-400 leading-snug">
+                        {song.artist}
+                      </td>
+                      <td className="hidden sm:table-cell px-4 py-3 text-center text-zinc-500 tabular-nums">
+                        {song.released}
+                      </td>
+                      <td className="px-4 py-3 text-center text-zinc-300 tabular-nums font-medium">
+                        {song.rating}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-        .tab-btn {
-          padding: 10px 20px;
-          border: none;
-          border-bottom: 2px solid transparent;
-          margin-bottom: -2px;
-          background: transparent;
-          cursor: pointer;
-          font-size: 0.95rem;
-          font-weight: 500;
-          opacity: 0.5;
-          transition: opacity 0.15s, border-color 0.15s;
-          white-space: nowrap;
-        }
-
-        .tab-btn:hover {
-          opacity: 0.8;
-        }
-
-        .tab-btn.active {
-          opacity: 1;
-          border-bottom-color: #4a90d9;
-          color: #4a90d9;
-        }
-
-        .status {
-          text-align: center;
-          padding: 40px;
-          opacity: 0.6;
-          font-size: 1.1rem;
-        }
-
-        .status.error {
-          color: #e55;
-          opacity: 1;
-        }
-
-        /* Controls */
-        .controls {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin-bottom: 16px;
-          flex-wrap: wrap;
-        }
-
-        .label {
-          font-size: 0.9rem;
-          opacity: 0.7;
-        }
-
-        .total {
-          margin-left: auto;
-          font-size: 0.85rem;
-          opacity: 0.5;
-        }
-
-        .size-btn {
-          padding: 4px 12px;
-          border: 1px solid currentColor;
-          border-radius: 4px;
-          background: transparent;
-          cursor: pointer;
-          font-size: 0.85rem;
-          opacity: 0.6;
-          transition: opacity 0.15s, background 0.15s;
-        }
-
-        .size-btn:hover {
-          opacity: 1;
-        }
-
-        .size-btn.active {
-          background: #4a90d9;
-          border-color: #4a90d9;
-          color: #fff;
-          opacity: 1;
-        }
-
-        /* Table */
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 0.92rem;
-        }
-
-        th {
-          text-align: left;
-          padding: 10px 14px;
-          font-size: 0.78rem;
-          font-weight: 600;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          opacity: 0.6;
-          border-bottom: 2px solid rgba(128, 128, 128, 0.2);
-        }
-
-        td {
-          padding: 10px 14px;
-          border-bottom: 1px solid rgba(128, 128, 128, 0.1);
-        }
-
-        tr:hover td {
-          background: rgba(128, 128, 128, 0.06);
-        }
-
-        .col-rank {
-          width: 70px;
-          text-align: center;
-        }
-
-        .col-released {
-          width: 90px;
-        }
-
-        .col-rating {
-          width: 80px;
-          text-align: center;
-        }
-
-        /* Pagination */
-        .pagination {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 16px;
-          margin-top: 24px;
-        }
-
-        .page-btn {
-          padding: 6px 16px;
-          border: 1px solid rgba(128, 128, 128, 0.4);
-          border-radius: 4px;
-          background: transparent;
-          cursor: pointer;
-          font-size: 0.9rem;
-          transition: opacity 0.15s;
-        }
-
-        .page-btn:disabled {
-          opacity: 0.25;
-          cursor: default;
-        }
-
-        .page-btn:not(:disabled):hover {
-          border-color: #4a90d9;
-          color: #4a90d9;
-        }
-
-        .page-info {
-          font-size: 0.9rem;
-          opacity: 0.7;
-          min-width: 120px;
-          text-align: center;
-        }
-      `}</style>
+            {/* Pagination */}
+            <div className="flex items-center justify-center gap-4 mt-6">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 rounded border border-zinc-700 text-sm text-zinc-300 hover:border-zinc-500 disabled:opacity-25 disabled:cursor-default transition-colors"
+              >
+                ← Prev
+              </button>
+              <span className="text-sm text-zinc-500 min-w-[8rem] text-center">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 rounded border border-zinc-700 text-sm text-zinc-300 hover:border-zinc-500 disabled:opacity-25 disabled:cursor-default transition-colors"
+              >
+                Next →
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
